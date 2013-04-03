@@ -12,7 +12,7 @@ public class VAssistant extends Thread {
 	
 	public VAssistant()
 	{
-		mRuleBase.add(new Rule(new Condition(), new Action()));
+		mRuleBase.add(new Rule(new ConditionInt("Canicule", "temperature", 30, Integer.MAX_VALUE), new Action()));
 	}
 	
 	public void run()
@@ -55,7 +55,8 @@ public class VAssistant extends Thread {
 			Rule r = ruleIt.next();
 			if (r.mActive)
 			{
-				System.out.println("an action is triggered");
+//				System.out.println("an action is triggered");
+				r.mAction.execute();
 				r.mActive = false;
 			}
 		}
@@ -89,7 +90,7 @@ public class VAssistant extends Thread {
 		
 		while (stim != null)
 		{
-			mWorldModel.push(new Knowledge("temperature", stim.rawText()));
+			mWorldModel.push(new KnowledgeInt("temperature", Integer.parseInt(stim.rawText())));
 			stim = mPerceptions.poll();
 		} 
 		System.out.println(mWorldModel.toString());

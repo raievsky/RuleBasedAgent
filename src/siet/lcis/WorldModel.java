@@ -10,9 +10,25 @@ public class WorldModel extends ArrayList<Knowledge> {
 		boolean existing = false;
 		for (Iterator<Knowledge> kIt = this.iterator(); kIt.hasNext();) {
 			Knowledge k = kIt.next();
-			if (k.mAttribute == knowledge.mAttribute)
+			if (k.mID == knowledge.mID)
 			{
-				k.mValue = knowledge.mValue;
+				if (k.getClass() == knowledge.getClass())
+				{
+					if (k instanceof KnowledgeInt)
+					{
+						((KnowledgeInt) k).mValue = ((KnowledgeInt) knowledge).mValue;
+					}
+					else if (k instanceof KnowledgeString)
+					{
+						((KnowledgeString) k).mValue = ((KnowledgeString) knowledge).mValue;
+					}
+					else if (k instanceof KnowledgeBool)
+					{
+						((KnowledgeBool) k).mValue = ((KnowledgeBool) knowledge).mValue;
+					}
+				} else {
+					System.err.println("Two knowledges with same ID son't have same type.");
+				}
 				existing = true;
 				break;
 			}

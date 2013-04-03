@@ -1,21 +1,18 @@
 package siet.lcis;
 
-public class Knowledge {
-	String mAttribute;
-	String mValue;
+public abstract class Knowledge {
+	String mID;
+//	T mValue;
 	
-	/**
-	 * @param pAttribute
-	 * @param pValue
-	 */
-	public Knowledge(String pAttribute, String pValue) {
-		this.mAttribute = pAttribute;
-		this.mValue = pValue;
+	public Knowledge(String pID)//, T pValue)
+	{
+		this.mID = pID;
+//		this.mValue = pValue;
 	}
-
-	@Override
-	public String toString() {
-		return "Knowledge [mAttribute=" + mAttribute + ", mValue=" + mValue
-				+ "]";
-	}
+	
+//	@Override
+//	public String toString() {
+//		return "Knowledge [mID=" + mID + ", mValue=" + mValue
+//				+ "]";
+//	}
 }
