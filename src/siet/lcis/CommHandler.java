@@ -29,6 +29,7 @@ public class CommHandler extends Thread {
 			try 
 			{
 				CommHandlerTask vAssistantCommTask = new CommHandlerTask(mSocket.accept());
+				System.err.println("new comm handler task created.");
 				vAssistantCommTask.setAssistant(mVirtualAssistant);
 				vAssistantCommTask.start();
 			}

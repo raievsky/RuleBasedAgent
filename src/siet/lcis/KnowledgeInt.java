@@ -1,8 +1,12 @@
 package siet.lcis;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+
 public class KnowledgeInt extends Knowledge
 {
-	protected int mValue;
+	protected Integer mValue;
+	public ConcurrentLinkedQueue<Transition<Integer>> mTransitionList = new ConcurrentLinkedQueue<Transition<Integer>>();
 
 	public KnowledgeInt(String pID, int pValue) {
 		super(pID);

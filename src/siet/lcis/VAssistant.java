@@ -1,12 +1,16 @@
 package siet.lcis;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class VAssistant extends Thread {
 
 	WorldModel mWorldModel = new WorldModel();
 	RuleBase mRuleBase = new RuleBase();
+	
+	protected Map<String, CommHandlerTask> mServiceMap = new HashMap<String, CommHandlerTask>();
 	
 	public ConcurrentLinkedQueue<Stimulus> mPerceptions = new ConcurrentLinkedQueue<Stimulus>();
 	
@@ -55,7 +59,7 @@ public class VAssistant extends Thread {
 			Rule r = ruleIt.next();
 			if (r.mActive)
 			{
-//				System.out.println("an action is triggered");
+				System.out.println("an action is triggered");
 				r.mAction.execute();
 				r.mActive = false;
 			}
@@ -93,6 +97,37 @@ public class VAssistant extends Thread {
 			mWorldModel.push(new KnowledgeInt("temperature", Integer.parseInt(stim.rawText())));
 			stim = mPerceptions.poll();
 		} 
-		System.out.println(mWorldModel.toString());
+//		System.err.println(mWorldModel.toString());
+		
+		if (!mServiceMap.isEmpty())
+		{
+			for (String serviceName : mServiceMap.keySet())
+			{
+				if (serviceName.equals("siet.lcis.DisplayMessagesActivity"))
+				{
+					CommHandlerTask task = mServiceMap.get(serviceName);
+					if (task != null)
+					{
+//						System.out.println("a commnication handler is available, sending world model to it.");
+						task.writeToStream(mWorldModel.toString());
+					}
+					else
+					{
+						System.err.println("ERROR (Internal): No Communication handler task available.");
+					}
+				}
+			}
+		}
+	}
+
+	public void registerService(String pServiceId, CommHandlerTask pCommHandlerTask)
+	{
+		mServiceMap.put(pServiceId, pCommHandlerTask);
+		System.out.println("New service registered: ["+pServiceId+"]");
+	}
+
+	public void unregisterService(String mSenderId)
+	{
+		mServiceMap.remove(mSenderId);
 	}
 }

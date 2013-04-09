@@ -14,5 +14,4 @@ public abstract class Condition {
 	}
 	
 	public abstract boolean match(WorldModel pWM);
-	
 }
