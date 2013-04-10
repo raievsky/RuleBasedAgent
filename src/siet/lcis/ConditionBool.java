@@ -15,20 +15,6 @@ public class ConditionBool extends Condition {
 		mValue = pValue;
 	}
 	
-	/**
-	 * 
-	 * @param pHLength Length of the history of kept values 
-	 */
-	public void setHistoryLength(long pHLength)
-	{
-		mHistoryLength = pHLength;
-	}
-	
-	public void setAccumulatedTimeThreshold(long pATT)
-	{
-		mAccumulatedTimeThreshold = pATT;
-	}
-	
 	@Override
 	public boolean match(WorldModel pWM) {
 		boolean matchFound = false;

@@ -19,6 +19,20 @@ public abstract class Condition {
 	
 	public abstract boolean match(WorldModel pWM);
 	
+	/**
+	 * 
+	 * @param pHLength Length of the history of kept values 
+	 */
+	public void setHistoryLength(int pHLength)
+	{
+		mHistoryLength = pHLength;
+	}
+	
+	public void setAccumulatedTimeThreshold(int pATT)
+	{
+		mAccumulatedTimeThreshold = pATT;
+	}
+	
 	protected long computeMatchingTime(Iterable<Transition<Boolean>> pTransList, boolean pValue)
 	{
 		Iterator<Transition<Boolean>> it = pTransList.iterator();

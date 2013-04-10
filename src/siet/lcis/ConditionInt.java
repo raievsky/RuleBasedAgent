@@ -22,19 +22,6 @@ public class ConditionInt extends Condition {
 		mMax = max;
 	}
 	
-	/**
-	 * 
-	 * @param pHLength Length of the history of kept values 
-	 */
-	public void setHistoryLength(int pHLength)
-	{
-		mHistoryLength = pHLength;
-	}
-	
-	public void setAccumulatedTimeThreshold(int pATT)
-	{
-		mAccumulatedTimeThreshold = pATT;
-	}
 
 	@Override
 	public boolean match(WorldModel pWM)
@@ -50,15 +37,12 @@ public class ConditionInt extends Condition {
 			{
 				if (k.mHistoryLength == 0)
 				{
-					matchFound = ((KnowledgeInt) k).mID == mKnowledgeID &&
-							((KnowledgeInt) k).mValue > mMin &&
-							((KnowledgeInt) k).mValue <= mMax;
+					matchFound = basicMatch((KnowledgeInt) k);
 				}
 				else
 				{
 					long accumulatedTime = computeAccumulatedTime((KnowledgeInt) k);
 					matchFound = accumulatedTime >= mAccumulatedTimeThreshold;
-
 				}
 			}
 			ki++;
@@ -66,10 +50,8 @@ public class ConditionInt extends Condition {
 		return matchFound;
 	}
 
-	private long computeAccumulatedTime(KnowledgeInt k) {
-		
-//		System.err.println("ConditionInt computeAccumulatedTime not yet implemened.");
-//		return 0;
+	private long computeAccumulatedTime(KnowledgeInt k)
+	{
 		if (k.isValid())
 		{
 			List<Transition<Boolean>> lMachingTransitions = filterIntTransitions(k);

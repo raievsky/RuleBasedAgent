@@ -16,7 +16,7 @@ public class WorldModel extends ArrayList<Knowledge> {
 				{
 					if (k instanceof KnowledgeInt)
 					{
-						((KnowledgeInt) k).mValue = ((KnowledgeInt) knowledge).mValue;
+						((KnowledgeInt) k).appendValue(((KnowledgeInt) knowledge).mValue);
 					}
 					else if (k instanceof KnowledgeString)
 					{
@@ -25,8 +25,6 @@ public class WorldModel extends ArrayList<Knowledge> {
 					else if (k instanceof KnowledgeBool)
 					{
 						((KnowledgeBool) k).appendValue(((KnowledgeBool) knowledge).mValue);
-						System.out.println("pushing stimulus in world model");
-//						((KnowledgeBool) k).mValue = ((KnowledgeBool) knowledge).mValue;
 					}
 				} else {
 					System.err.println("Two knowledges with same ID don't have same type.");

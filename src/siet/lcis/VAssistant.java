@@ -16,7 +16,10 @@ public class VAssistant extends Thread {
 	
 	public VAssistant()
 	{
-		mRuleBase.add(new Rule(new ConditionInt("Canicule", "temperature", 30, Integer.MAX_VALUE), new Action()));
+		ConditionInt isCaniculeInt = new ConditionInt("canicule int", "temperature", 30, Integer.MAX_VALUE);
+		isCaniculeInt.setHistoryLength(20);
+		isCaniculeInt.setAccumulatedTimeThreshold(10);
+		mRuleBase.add(new Rule(isCaniculeInt , new Action()));
 		ConditionBool isCanicule = new ConditionBool("Canicule Bool", "temperature", true);
 		isCanicule.setHistoryLength(10);
 		isCanicule.setAccumulatedTimeThreshold(5);
@@ -98,8 +101,9 @@ public class VAssistant extends Thread {
 		while (stim != null)
 		{
 			int temp = Integer.parseInt(stim.rawText());
-			boolean b = temp > 30;
-			mWorldModel.push(new KnowledgeBool("temperature", b));
+//			boolean b = temp > 30;
+//			mWorldModel.push(new KnowledgeBool("temperature", b));
+			mWorldModel.push(new KnowledgeInt("temperature", temp));
 			stim = mPerceptions.poll();
 		} 
 		
