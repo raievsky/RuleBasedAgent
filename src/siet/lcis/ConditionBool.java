@@ -129,7 +129,6 @@ public class ConditionBool extends Condition {
 				trans = next;
 			}
 			
-			
 			// trans is the last transition
 			if (trans.mValue == mValue)
 			{
@@ -137,46 +136,6 @@ public class ConditionBool extends Condition {
 			}
 			
 			return lAccumulatedTime / 1000;
-//			
-//			
-//			
-//			
-//			if ((now.getTime() - trans.mDate.getTime()) > lHistoryLengthMilli )
-//			{
-//				// No transition in the monitored time lapse
-//				if (basicMatch(k))
-//				{
-//					return mHistoryLength;
-//				}
-//			}
-//			else
-//			{
-//				// At least one transition in the monitored time lapse
-//				// and knowledge was valid before this transition.
-//				if (trans.mValue != mValue && lTransitionsSkipped)
-//				{
-//					// The first transition in the monitored time lapse is toward
-//					// the non-matching state initialize accumulated time accordingly.
-//					lAccumulatedTime = trans.mDate.getTime() - (now.getTime() - lHistoryLengthMilli);
-//				}
-//				
-//				while (it.hasNext())
-//				{
-//					Transition<Boolean> lNextTrans = (Transition<Boolean>) it.next();
-//					if (it.hasNext())
-//					{
-//						// Not on the last transition, increment accumulated time.
-//						lAccumulatedTime += lNextTrans.mDate.getTime() - trans.mDate.getTime();
-//					}
-//					trans = lNextTrans;
-//				}
-//				
-//				// trans is the last transition
-//				if (trans.mValue == mValue)
-//				{
-//				}
-//				return lAccumulatedTime / 1000;
-//			}
 		}
 		else
 		{

@@ -17,6 +17,10 @@ public class VAssistant extends Thread {
 	public VAssistant()
 	{
 		mRuleBase.add(new Rule(new ConditionInt("Canicule", "temperature", 30, Integer.MAX_VALUE), new Action()));
+		ConditionBool isCanicule = new ConditionBool("Canicule Bool", "temperature", true);
+		isCanicule.setHistoryLength(10);
+		isCanicule.setAccumulatedTimeThreshold(5);
+		mRuleBase.add(new Rule(isCanicule, new Action()));
 	}
 	
 	public void run()
@@ -59,7 +63,7 @@ public class VAssistant extends Thread {
 			Rule r = ruleIt.next();
 			if (r.mActive)
 			{
-				System.out.println("an action is triggered");
+				System.out.println("Action ["+r.mCondition.mID+"] is triggered");
 				r.mAction.execute();
 				r.mActive = false;
 			}
@@ -77,7 +81,6 @@ public class VAssistant extends Thread {
 			Rule r = ruleIt.next();
 			r.match(mWorldModel);
 		}
-		
 	}
 
 
@@ -94,10 +97,11 @@ public class VAssistant extends Thread {
 		
 		while (stim != null)
 		{
-			mWorldModel.push(new KnowledgeInt("temperature", Integer.parseInt(stim.rawText())));
+			int temp = Integer.parseInt(stim.rawText());
+			boolean b = temp > 30;
+			mWorldModel.push(new KnowledgeBool("temperature", b));
 			stim = mPerceptions.poll();
 		} 
-//		System.err.println(mWorldModel.toString());
 		
 		if (!mServiceMap.isEmpty())
 		{
@@ -108,7 +112,6 @@ public class VAssistant extends Thread {
 					CommHandlerTask task = mServiceMap.get(serviceName);
 					if (task != null)
 					{
-//						System.out.println("a commnication handler is available, sending world model to it.");
 						task.writeToStream(mWorldModel.toString());
 					}
 					else

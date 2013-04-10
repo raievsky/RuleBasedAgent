@@ -40,9 +40,13 @@ public class KnowledgeBool extends Knowledge {
 	{
 		// TODO cleanup transition list from obsolete transitions
 		
-		Date now = new Date();
-		mTransitionList.offer(new Transition<Boolean>(pValue, now));
-		mValue = pValue;
+		// No need to add a transition when state does not change
+		if (!(pValue == mValue && mIsValid))
+		{
+			Date now = new Date();
+			mTransitionList.offer(new Transition<Boolean>(pValue, now));
+			mValue = pValue;
+		}
 		
 		mIsValid = true;
 	}
