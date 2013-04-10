@@ -17,6 +17,11 @@ public abstract class Knowledge {
 		mHistoryLength = pLength;
 	}
 	
+	public boolean isValid()
+	{
+		return mIsValid;
+	}
+	
 //	@Override
 //	public String toString() {
 //		return "Knowledge [mID=" + mID + ", mValue=" + mValue

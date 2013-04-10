@@ -31,11 +31,6 @@ public class KnowledgeBool extends Knowledge {
 		return mValue;
 	}
 	
-	public boolean isValid()
-	{
-		return mIsValid;
-	}
-	
 	public void appendValue(boolean pValue)
 	{
 		// TODO cleanup transition list from obsolete transitions
