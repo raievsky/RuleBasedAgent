@@ -2,6 +2,8 @@ package siet.lcis;
 
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import sun.nio.cs.HistoricallyNamedCharset;
@@ -66,57 +68,41 @@ public class ConditionInt extends Condition {
 
 	private long computeAccumulatedTime(KnowledgeInt k) {
 		
-		System.err.println("ConditionInt computeAccumulatedTime not yet implemened.");
-		return 0;
+//		System.err.println("ConditionInt computeAccumulatedTime not yet implemened.");
+//		return 0;
+		if (k.isValid())
+		{
+			List<Transition<Boolean>> lMachingTransitions = filterIntTransitions(k);
+			return computeMatchingTime(lMachingTransitions, true);
+		}
 		
-		/*
-		if (!k.mTransitionList.isEmpty()) 
-		{
-			Iterator<Transition<Integer>> it = k.mTransitionList.iterator();
-			Transition<Integer> trans = it.next();
-			Date now = new Date();
-			
-			// Skip all transitions that occurred before the beginning of the monitored time lapse
-			while (((now.getTime() - trans.mDate.getTime()) * 1000) > mHistoryLength && it.hasNext())
-			{
-				trans = (Transition<java.lang.Integer>) it.next();
-			}
-			
-			if ((now.getTime() - trans.mDate.getTime()) * 1000 > mHistoryLength )
-			{
-				// No transition in the monitored time lapse
-				if (basicMatch(k))
-				{
-					return mHistoryLength;
-				}
-			}
-			else
-			{
-				// At least one transition in the monitored time lapse
-//				if (!trans.mValue) {
-//					
-//				}
-
-			}
-			
-			if (it.hasNext())
-			{
-				// there is at least two transitions in the list.
-			}
-			
-		}
-		else
-		{
-			// No transition in the knowledge's transition list,
-			// return the duration of the monitored time lapse
-			// if the knowledge matches the condition.
-			if (basicMatch(k))
-			{
-				return mHistoryLength;
-			}
-		}
 		return 0;
-		*/
+	}
+
+	private List<Transition<Boolean>> filterIntTransitions(KnowledgeInt k)
+	{
+		List<Transition<Boolean>> result = new LinkedList<Transition<Boolean>>(); 
+		Iterator<Transition<Integer>> lKnowledgeTransitionsIt = (Iterator<Transition<Integer>>) k.mTransitionList.iterator();
+		Transition<Integer> trans = lKnowledgeTransitionsIt.next();
+		boolean lPrevMatch = basicMatch(trans.mValue);
+		result.add(new Transition<Boolean>(lPrevMatch, trans.mDate));
+		
+		while (lKnowledgeTransitionsIt.hasNext())
+		{
+			trans = (Transition<Integer>) lKnowledgeTransitionsIt.next();
+			boolean currentMatch = basicMatch(trans.mValue);
+			if (lPrevMatch != currentMatch)
+			{
+				result.add(new Transition<Boolean>(currentMatch, trans.mDate));
+				lPrevMatch = currentMatch;
+			}
+		}
+		
+		return result;
+	}
+
+	private boolean basicMatch(Integer pValue) {
+		return pValue > mMin && pValue <= mMax;
 	}
 
 	private boolean basicMatch(KnowledgeInt k) {

@@ -6,8 +6,8 @@ import java.util.Iterator;
 public class ConditionBool extends Condition {
 
 	protected boolean mValue;
-	protected long mHistoryLength = 0;
-	protected long mAccumulatedTimeThreshold = 0;
+//	protected long mHistoryLength = 0;
+//	protected long mAccumulatedTimeThreshold = 0;
 	
 	public ConditionBool(String id, String knowledgeID, boolean pValue)
 	{
@@ -73,8 +73,9 @@ public class ConditionBool extends Condition {
 
 	private long computeAccumulatedTime(KnowledgeBool k) {
 		
-//		System.err.println("ConditionBool computeAccumulatedTime not yet implemened.");
-//		return 0;
+		return computeMatchingTime(k.mTransitionList, mValue);
+		
+		/*
 		final long lHistoryLengthMilli = mHistoryLength * 1000;
 		
 		if (!k.mTransitionList.isEmpty())
@@ -142,6 +143,7 @@ public class ConditionBool extends Condition {
 			System.err.println("Error: trying to compute accumulated time on an invalid knowledge.");
 		}
 		return 0;
+		*/
 	}
 
 	private boolean basicMatch(KnowledgeBool k) {
