@@ -62,7 +62,7 @@ public class TestConditionBool {
 		
 		Thread.sleep(2000);
 		assertTrue("Only one transition to matching state", mFalsecb.match(mkb));
-		
+	
 		// Transition ending not matching state
 		// condition matching a true value
 		mkb.clearHistory();
@@ -95,7 +95,7 @@ public class TestConditionBool {
 		mkb.appendValue(true);
 		Thread.sleep(100);
 		mkb.appendValue(false);
-//		Thread.sleep(100);
+		Thread.sleep(100);
 		assertTrue(!mTruecb.match(mkb));
 		Thread.sleep(2000);
 		assertTrue(!mTruecb.match(mkb));
@@ -108,53 +108,249 @@ public class TestConditionBool {
 		Thread.sleep(100);
 		assertTrue(mTruecb.match(mkb));
 		
-		
-		
 	      // condition matching false value
+		    // not matching
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		assertTrue(!mFalsecb.match(mkb));
+		Thread.sleep(2000);
+		assertTrue(!mFalsecb.match(mkb));
+		    // matching
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(2100);
+		mkb.appendValue(true);
+		assertTrue(mFalsecb.match(mkb));
+		Thread.sleep(100);
+		assertTrue(mFalsecb.match(mkb));
 	
-	   // First transition ending in matching state
+	   // First transition ending in NOT matching state
 	      // condition matching true value
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		assertTrue(!mTruecb.match(mkb));
+		Thread.sleep(2000);
+		assertTrue(mTruecb.match(mkb));
+		    // not matching
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(2100);
+		mkb.appendValue(true);
+		assertTrue(!mTruecb.match(mkb));
+		
 	      // condition matching false value
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		assertTrue(!mFalsecb.match(mkb));
+		Thread.sleep(2000);
+		assertTrue(mFalsecb.match(mkb));
+		    // not matching
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(2100);
+		mkb.appendValue(false);
+		assertTrue(!mFalsecb.match(mkb));
+	
+	}
+	
 	
 	// Testing condition matching with more than two transitions
+	@Test
+	public void MoreThanTwoTransitionsWithinHisoryTest() throws InterruptedException {
+		mTruecb.setHistoryLength(5);
+		mTruecb.setAccumulatedTimeThreshold(2);
+		mFalsecb.setHistoryLength(5);
+		mFalsecb.setAccumulatedTimeThreshold(2);
 	
 	   // First transition ending in matching state
 	      // condition matching true value
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		assertTrue(!mTruecb.match(mkb));
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		assertTrue(!mTruecb.match(mkb));
+		mkb.appendValue(true);
+		Thread.sleep(2000);
+		assertTrue(mTruecb.match(mkb));
 	      // condition matching false value
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		assertTrue(!mFalsecb.match(mkb));
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		assertTrue(!mFalsecb.match(mkb));
+		mkb.appendValue(false);
+		Thread.sleep(2000);
+		assertTrue(mFalsecb.match(mkb));
 	
-	   // First transition ending in matching state
+	   // First transition ending in NOT matching state
 	      // condition matching true value
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		assertTrue(!mTruecb.match(mkb));
+		mkb.appendValue(true);
+		Thread.sleep(2000);
+		assertTrue(mTruecb.match(mkb));
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		assertTrue(mTruecb.match(mkb));
 	      // condition matching false value
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		assertTrue(!mFalsecb.match(mkb));
+		mkb.appendValue(false);
+		Thread.sleep(2000);
+		assertTrue(mFalsecb.match(mkb));
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		assertTrue(mFalsecb.match(mkb));
 	}
 	
 	
 	// Testing condition matching with only one transition,
 	// occurring before the beginning of the monitored
 	// time lapse.
-	   // Transition ending in matching state
-	      // condition matching true value
-	      // condition matching false value
-	   // Transition ending not matching state
-	      // condition matching true value
-	      // condition matching false value
+	@Test
+	public void SingleTransitionOutsideHisoryTest() throws InterruptedException {
+		mTruecb.setHistoryLength(3);
+		mTruecb.setAccumulatedTimeThreshold(2);
+		mFalsecb.setHistoryLength(3);
+		mFalsecb.setAccumulatedTimeThreshold(2);
+
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(3500);
+		assertTrue(mTruecb.match(mkb));
+		assertTrue(!mFalsecb.match(mkb));
+
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(3500);
+		assertTrue(mFalsecb.match(mkb));
+		assertTrue(!mTruecb.match(mkb));
+	}
 	
 	// Testing condition matching with two transitions,
 	// one transition occurring before the beginning of the monitored
 	// time lapse and one after.
-	   // First transition ending in matching state
-	      // condition matching true value
-	      // condition matching false value
-	   // First transition ending not matching state
-	      // condition matching true value
-	      // condition matching false value
+	@Test
+	public void TwoTransitionsOutsideHisoryTest() throws InterruptedException {
+		mTruecb.setHistoryLength(3);
+		mTruecb.setAccumulatedTimeThreshold(2);
+		mFalsecb.setHistoryLength(3);
+		mFalsecb.setAccumulatedTimeThreshold(2);
+
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(2500);
+		mkb.appendValue(true);
+		Thread.sleep(500);
+		assertTrue(!mTruecb.match(mkb));
+		assertTrue(mFalsecb.match(mkb));
+
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(500);
+		mkb.appendValue(true);
+		Thread.sleep(2250);
+		assertTrue(mTruecb.match(mkb));
+		assertTrue(!mFalsecb.match(mkb));
+		
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(2500);
+		mkb.appendValue(false);
+		Thread.sleep(500);
+		assertTrue(mTruecb.match(mkb));
+		assertTrue(!mFalsecb.match(mkb));
+		
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(500);
+		mkb.appendValue(false);
+		Thread.sleep(2250);
+		assertTrue(!mTruecb.match(mkb));
+		assertTrue(mFalsecb.match(mkb));
+	}
 	
-	// Testing condition matching with more than two transitions,
-	// first transition occurring before the beginning of the monitored
-	// time lapse and the others after.
-	   // First transition ending in matching state
-	      // condition matching true value
-	      // condition matching false value
-	   // First transition ending not matching state
-	      // condition matching true value
-	      // condition matching false value
+	// Testing condition matching with two transitions,
+	// one transition occurring before the beginning of the monitored
+	// time lapse and one after.
+	@Test
+	public void MoreThanTwoTransitionsOutsideHisoryTest() throws InterruptedException {
+		mTruecb.setHistoryLength(3);
+		mTruecb.setAccumulatedTimeThreshold(2);
+		mFalsecb.setHistoryLength(3);
+		mFalsecb.setAccumulatedTimeThreshold(2);
+
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		mkb.appendValue(false);
+		Thread.sleep(2500);
+		mkb.appendValue(true);
+		Thread.sleep(500);
+		assertTrue(!mTruecb.match(mkb));
+		assertTrue(mFalsecb.match(mkb));
+
+		mkb.clearHistory();
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		mkb.appendValue(false);
+		Thread.sleep(500);
+		mkb.appendValue(true);
+		Thread.sleep(2250);
+		assertTrue(mTruecb.match(mkb));
+		assertTrue(!mFalsecb.match(mkb));
+		
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		mkb.appendValue(true);
+		Thread.sleep(2500);
+		mkb.appendValue(false);
+		Thread.sleep(500);
+		assertTrue(mTruecb.match(mkb));
+		assertTrue(!mFalsecb.match(mkb));
+		
+		mkb.clearHistory();
+		mkb.appendValue(false);
+		Thread.sleep(100);
+		mkb.appendValue(true);
+		Thread.sleep(500);
+		mkb.appendValue(false);
+		Thread.sleep(2250);
+		assertTrue(!mTruecb.match(mkb));
+		assertTrue(mFalsecb.match(mkb));
+	}
 }

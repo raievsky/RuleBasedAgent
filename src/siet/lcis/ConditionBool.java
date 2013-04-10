@@ -52,14 +52,21 @@ public class ConditionBool extends Condition {
 
 	public boolean match(KnowledgeBool pKBool)
 	{
-		if (mHistoryLength == 0)
+		if (pKBool.isValid())
 		{
-			return basicMatch(pKBool);
+			if (mHistoryLength == 0)
+			{
+				return basicMatch(pKBool);
+			}
+			else
+			{
+				long accumulatedTime = computeAccumulatedTime(pKBool);
+				return accumulatedTime >= mAccumulatedTimeThreshold;
+			}
 		}
 		else
 		{
-			long accumulatedTime = computeAccumulatedTime(pKBool);
-			return accumulatedTime >= mAccumulatedTimeThreshold;
+			return false;
 		}
 	}
 
@@ -68,14 +75,16 @@ public class ConditionBool extends Condition {
 		
 //		System.err.println("ConditionBool computeAccumulatedTime not yet implemened.");
 //		return 0;
-		long lAccumulatedTime = 0;
 		final long lHistoryLengthMilli = mHistoryLength * 1000;
-
-		if (!k.mTransitionList.isEmpty()) {
+		
+		if (!k.mTransitionList.isEmpty())
+		{
+			long lAccumulatedTime = 0;
 			Iterator<Transition<Boolean>> it = k.mTransitionList.iterator();
 			Transition<Boolean> trans = it.next();
 			Date now = new Date();
 			boolean lTransitionsSkipped = false;
+			boolean lMatchingAtBeginningOfHistory = trans.mValue == mValue;
 
 			// Skip all transitions that occurred before the beginning of the monitored time lapse
 			while (it.hasNext() && 
@@ -83,54 +92,95 @@ public class ConditionBool extends Condition {
 			{
 				trans = (Transition<Boolean>) it.next();
 				lTransitionsSkipped = true;
+				lMatchingAtBeginningOfHistory = (trans.mValue == mValue);
 			}
 
-			if ((now.getTime() - trans.mDate.getTime()) > lHistoryLengthMilli )
+			if ((now.getTime() - trans.mDate.getTime()) < lHistoryLengthMilli)
 			{
-				// No transition in the monitored time lapse
-				if (basicMatch(k))
+				if (trans.mValue != mValue && lTransitionsSkipped)
 				{
-					return mHistoryLength;
+					// The first transition in the monitored time lapse is toward
+					// the non-matching state and the knowledge was valid at the 
+					// beginning of history, initialize accumulated time accordingly.
+					lAccumulatedTime = trans.mDate.getTime() - (now.getTime() - lHistoryLengthMilli);
 				}
 			}
 			else
 			{
-				// At least one transition in the monitored time lapse
-				// and knowledge was valid before this transition.
-				if (trans.mValue != mValue && lTransitionsSkipped)
+				// No transition in the monitored time lapse
+				if (lMatchingAtBeginningOfHistory)
 				{
-					// TODO need to check that there was a valid value before this transition.
-					
-					// The first transition in the monitored time lapse is toward
-					// the non-matching state initialize accumulated time accordingly.
-					lAccumulatedTime = trans.mDate.getTime() - (now.getTime() - lHistoryLengthMilli);
+					return mHistoryLength;
 				}
-				
-				while (it.hasNext())
+				else
 				{
-					Transition<Boolean> lNextTrans = (Transition<Boolean>) it.next();
-					if (it.hasNext())
-					{
-						// Not on the last transition, increment accumulated time.
-						lAccumulatedTime += lNextTrans.mDate.getTime() - trans.mDate.getTime();
-					}
-					trans = lNextTrans;
+					return 0;
 				}
-				
-				// trans is the last transition
-				lAccumulatedTime += now.getTime() - trans.mDate.getTime();
-				return lAccumulatedTime / 1000;
 			}
+			
+			// Process remaining transitions
+			while (it.hasNext())
+			{
+				Transition<Boolean> next = (Transition<Boolean>) it.next();
+				if (trans.mValue == mValue)
+				{
+					lAccumulatedTime += next.mDate.getTime() - trans.mDate.getTime();
+				}
+				trans = next;
+			}
+			
+			
+			// trans is the last transition
+			if (trans.mValue == mValue)
+			{
+				lAccumulatedTime += now.getTime() - trans.mDate.getTime();
+			}
+			
+			return lAccumulatedTime / 1000;
+//			
+//			
+//			
+//			
+//			if ((now.getTime() - trans.mDate.getTime()) > lHistoryLengthMilli )
+//			{
+//				// No transition in the monitored time lapse
+//				if (basicMatch(k))
+//				{
+//					return mHistoryLength;
+//				}
+//			}
+//			else
+//			{
+//				// At least one transition in the monitored time lapse
+//				// and knowledge was valid before this transition.
+//				if (trans.mValue != mValue && lTransitionsSkipped)
+//				{
+//					// The first transition in the monitored time lapse is toward
+//					// the non-matching state initialize accumulated time accordingly.
+//					lAccumulatedTime = trans.mDate.getTime() - (now.getTime() - lHistoryLengthMilli);
+//				}
+//				
+//				while (it.hasNext())
+//				{
+//					Transition<Boolean> lNextTrans = (Transition<Boolean>) it.next();
+//					if (it.hasNext())
+//					{
+//						// Not on the last transition, increment accumulated time.
+//						lAccumulatedTime += lNextTrans.mDate.getTime() - trans.mDate.getTime();
+//					}
+//					trans = lNextTrans;
+//				}
+//				
+//				// trans is the last transition
+//				if (trans.mValue == mValue)
+//				{
+//				}
+//				return lAccumulatedTime / 1000;
+//			}
 		}
 		else
 		{
-			// No transition in the knowledge's transition list,
-			// return the duration of the monitored time lapse
-			// if the knowledge matches the condition.
-			if (basicMatch(k))
-			{
-				return mHistoryLength;
-			}
+			System.err.println("Error: trying to compute accumulated time on an invalid knowledge.");
 		}
 		return 0;
 	}
