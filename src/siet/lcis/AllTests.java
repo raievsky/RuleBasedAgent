@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({TestConditionBool.class})
+@SuiteClasses({TestConditionBool.class,TestConditionInt.class})
 public class AllTests {
 
 }

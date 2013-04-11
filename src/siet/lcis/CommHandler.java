@@ -3,6 +3,12 @@ package siet.lcis;
 import java.net.*;
 import java.io.*;
 
+/**
+ * 
+ * Class responsible for listening on the agent port and a launching
+ * {@link CommHandlerTask} for each active connection.
+ *
+ */
 public class CommHandler extends Thread {
 
 	private ServerSocket mSocket;

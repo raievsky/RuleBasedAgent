@@ -95,7 +95,11 @@ public class ConditionInt extends Condition {
 	{
 		if (pKnowledge.mID.equals(mKnowledgeID) && pKnowledge.isValid())
 		{
-			if (pKnowledge.mHistoryLength >= mHistoryLength)
+			if (mHistoryLength == 0)
+			{
+				return basicMatch(pKnowledge);
+			}
+			else if (pKnowledge.mHistoryLength >= mHistoryLength)
 			{
 				long accumulatedTime = computeAccumulatedTime((KnowledgeInt) pKnowledge);
 				return accumulatedTime >= mAccumulatedTimeThreshold;

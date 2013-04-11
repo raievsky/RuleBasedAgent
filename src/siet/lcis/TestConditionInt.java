@@ -18,6 +18,7 @@ public class TestConditionInt {
 	@Test
 	public void simpleValueTest()
 	{
+		knowledge.setHistoryLength(10);
 		knowledge.clearHistory();
 		condition.setHistoryLength(0);
 		condition.setAccumulatedTimeThreshold(0);
