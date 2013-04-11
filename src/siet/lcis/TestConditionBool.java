@@ -12,13 +12,14 @@ public class TestConditionBool {
 	ConditionBool mFalsecb = new ConditionBool("match false value", "test", false);
 	
 	@Test
-	public void KnowledgeNotValidTest() {
+	public void knowledgeNotValidTest()
+	{
 		assertTrue(!mTruecb.match(mkb));
 		assertTrue(!mFalsecb.match(mkb));
 	}
 	
 	@Test
-	public void SimpleValueTest() {
+	public void simpleValueTest() {
 		
 		mTruecb.setHistoryLength(0);
 		mTruecb.setAccumulatedTimeThreshold(0);
@@ -37,7 +38,7 @@ public class TestConditionBool {
 
 	// Testing condition matching with only one transition
 	@Test
-	public void SingleTransitionWithinHisoryTest() throws InterruptedException {
+	public void singleTransitionWithinHisoryTest() throws InterruptedException {
 		mTruecb.setHistoryLength(5);
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(5);
@@ -264,7 +265,7 @@ public class TestConditionBool {
 	// one transition occurring before the beginning of the monitored
 	// time lapse and one after.
 	@Test
-	public void TwoTransitionsOutsideHisoryTest() throws InterruptedException {
+	public void twoTransitionsOutsideHisoryTest() throws InterruptedException {
 		mTruecb.setHistoryLength(3);
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(3);
@@ -307,7 +308,7 @@ public class TestConditionBool {
 	// one transition occurring before the beginning of the monitored
 	// time lapse and one after.
 	@Test
-	public void MoreThanTwoTransitionsOutsideHisoryTest() throws InterruptedException {
+	public void moreThanTwoTransitionsOutsideHisoryTest() throws InterruptedException {
 		mTruecb.setHistoryLength(3);
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(3);

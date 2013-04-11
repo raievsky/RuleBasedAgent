@@ -3,6 +3,12 @@ package siet.lcis;
 import java.net.*;
 import java.io.*;
 
+/**
+ * Class responsible for low level communication with a 
+ * service. Request an id from the connecting service
+ * and register this service to the agent ({@link VAssistant})
+ * on creation.
+ */
 public class CommHandlerTask extends Thread {
 	    private Socket mSocket = null;
 	    private VAssistant mVAssistant = null;
@@ -71,7 +77,6 @@ public class CommHandlerTask extends Thread {
 		        if (mSocket.isConnected() && mOutputStream != null)
 		        {
 		            mOutputStream.println(message);
-//		            System.out.println(TAG+" sending: ["+message+"]");
 		        }
 		        else
 		        {

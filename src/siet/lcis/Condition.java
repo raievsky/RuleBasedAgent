@@ -8,7 +8,15 @@ public abstract class Condition {
 	
 	protected String mID = "";
 	protected String mKnowledgeID = "";
+	/**
+	 * Length of the monitored time lapse.
+	 */
 	protected long mHistoryLength = 0;
+	/**
+	 * The condition will be verified if the accumulated
+	 * time during which the value of the monitored {@link Knowledge}
+	 * is greater than this threshold.
+	 */
 	protected long mAccumulatedTimeThreshold = 0;
 
 	public Condition(String pID, String pKnowledgeID)
@@ -21,7 +29,7 @@ public abstract class Condition {
 	
 	/**
 	 * 
-	 * @param pHLength Length of the history of kept values 
+	 * @param pHLength Length of the monitored time lapse.
 	 */
 	public void setHistoryLength(int pHLength)
 	{
@@ -33,6 +41,16 @@ public abstract class Condition {
 		mAccumulatedTimeThreshold = pATT;
 	}
 	
+	/**
+	 * Compute the accumulated duration during which the state
+	 * of the transition in pTransList matches pValue.
+	 * Please ensure JUnit "AllTests" test pass if you modify this method.
+	 * 
+	 * @param pTransList a list of boolean {@link Transition}s
+	 * @param pValue the value to be matched in the {@link Transition}s
+	 * @return the accumulated time in seconds during which the value represented in
+	 * pTransList matches pValue
+	 */
 	protected long computeMatchingTime(Iterable<Transition<Boolean>> pTransList, boolean pValue)
 	{
 		Iterator<Transition<Boolean>> it = pTransList.iterator();
@@ -102,5 +120,4 @@ public abstract class Condition {
 		}
 		return 0;
 	}
-	
 }

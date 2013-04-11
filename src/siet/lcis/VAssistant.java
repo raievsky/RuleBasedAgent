@@ -16,6 +16,10 @@ public class VAssistant extends Thread {
 	
 	public VAssistant()
 	{
+		KnowledgeInt lKTemp = new KnowledgeInt("temperature");
+		lKTemp.setHistoryLength(30);
+		mWorldModel.push(lKTemp);
+		
 		ConditionInt isCaniculeInt = new ConditionInt("canicule int", "temperature", 30, Integer.MAX_VALUE);
 		isCaniculeInt.setHistoryLength(20);
 		isCaniculeInt.setAccumulatedTimeThreshold(10);
@@ -32,6 +36,7 @@ public class VAssistant extends Thread {
 		CommHandler lCommhandler = new CommHandler(this);
 		lCommhandler.start();
 		
+		// Main loop
 		do {
 			try
 			{
@@ -100,6 +105,9 @@ public class VAssistant extends Thread {
 		
 		while (stim != null)
 		{
+			// TODO parse stimuli to push appropriate knowledge to 
+			// world model.
+			
 			int temp = Integer.parseInt(stim.rawText());
 //			boolean b = temp > 30;
 //			mWorldModel.push(new KnowledgeBool("temperature", b));
@@ -107,6 +115,7 @@ public class VAssistant extends Thread {
 			stim = mPerceptions.poll();
 		} 
 		
+		// Send our world model to the debugging DisplayMessagesActivity service.
 		if (!mServiceMap.isEmpty())
 		{
 			for (String serviceName : mServiceMap.keySet())
@@ -127,6 +136,13 @@ public class VAssistant extends Thread {
 		}
 	}
 
+	/**
+	 * Add a service to the map of available services.
+	 * 
+	 * @param pServiceId Added service identifier
+	 * @param pCommHandlerTask {@link CommHandlerTask} which should be associated with
+	 * the given pServiceId
+	 */
 	public void registerService(String pServiceId, CommHandlerTask pCommHandlerTask)
 	{
 		mServiceMap.put(pServiceId, pCommHandlerTask);

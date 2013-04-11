@@ -9,9 +9,15 @@ public class KnowledgeInt extends Knowledge
 	protected Integer mValue;
 	public ConcurrentLinkedQueue<Transition<Integer>> mTransitionList = new ConcurrentLinkedQueue<Transition<Integer>>();
 
-	public KnowledgeInt(String pID, int pValue) {
+	public KnowledgeInt(String pID)
+	{
 		super(pID);
-		this.mValue = pValue;
+	}
+	
+	public KnowledgeInt(String pID, int pValue)
+	{
+		super(pID);
+		appendValue(pValue);
 	}
 
 	public void appendValue(int pValue)
@@ -19,7 +25,7 @@ public class KnowledgeInt extends Knowledge
 		// TODO cleanup transition list from obsolete transitions
 		
 		// No need to add a transition when state does not change
-		if (!(pValue == mValue && mIsValid))
+		if (!(mIsValid && pValue == mValue))
 		{
 			Date now = new Date();
 			mTransitionList.offer(new Transition<Integer>(pValue, now));
@@ -28,6 +34,12 @@ public class KnowledgeInt extends Knowledge
 		
 		mIsValid = true;
 	}
+	
+	public void clearHistory()
+	{
+		mTransitionList.clear();
+	}
+	
 	@Override
 	public String toString() {
 		return "Knowledge [mID=" + mID + ", mValue=" + mValue

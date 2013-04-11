@@ -20,7 +20,8 @@ public class WorldModel extends ArrayList<Knowledge> {
 					}
 					else if (k instanceof KnowledgeString)
 					{
-						((KnowledgeString) k).mValue = ((KnowledgeString) knowledge).mValue;
+						System.err.println("Not yet implemented: WorldModel push of KnowledgeString");
+//						((KnowledgeString) k).mValue = ((KnowledgeString) knowledge).mValue;
 					}
 					else if (k instanceof KnowledgeBool)
 					{
