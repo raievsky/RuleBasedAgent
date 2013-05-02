@@ -22,6 +22,8 @@ public abstract class Knowledge {
 		return mIsValid;
 	}
 	
+	abstract void clearHistory();
+	
 //	@Override
 //	public String toString() {
 //		return "Knowledge [mID=" + mID + ", mValue=" + mValue
