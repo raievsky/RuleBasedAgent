@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-public class ConditionString extends Condition {
+public class ConditionString extends AtomicCondition {
 	
 	protected ArrayList<String> mAcceptableValues = new ArrayList<String>();
 	

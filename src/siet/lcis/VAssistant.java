@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class VAssistant extends Thread {
 
 	WorldModel mWorldModel = new WorldModel();
-	RuleBase mRuleBase = new RuleBase();
+	RuleBase mRuleBase = new RuleBase();	
 	
 	protected Map<String, CommHandlerTask> mServiceMap = new HashMap<String, CommHandlerTask>();
 	
@@ -16,6 +16,9 @@ public class VAssistant extends Thread {
 	
 	public VAssistant()
 	{
+		mWorldModel.setRuleBase(mRuleBase);
+		mRuleBase.setWorldModel(mWorldModel);
+		
 		KnowledgeInt lKTemp = new KnowledgeInt("temperature");
 		lKTemp.setHistoryLength(30);
 		mWorldModel.push(lKTemp);

@@ -20,9 +20,10 @@ public class TestConditionBool {
 	
 	@Test
 	public void simpleValueTest() {
-		
 		mTruecb.setHistoryLength(0);
 		mTruecb.setAccumulatedTimeThreshold(0);
+		mkb.setHistoryLength(0);
+		
 		mkb.appendValue(false);
 		assertTrue("Boolean knowledge value should be false", !mTruecb.match(mkb));
 		mkb.appendValue(true);
@@ -43,6 +44,7 @@ public class TestConditionBool {
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(5);
 		mFalsecb.setAccumulatedTimeThreshold(2);
+		mkb.setHistoryLength(200);
 		
 		// Transition ending in matching state
 		// condition matching true value
@@ -88,6 +90,7 @@ public class TestConditionBool {
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(5);
 		mFalsecb.setAccumulatedTimeThreshold(2);
+		mkb.setHistoryLength(200);
 		
 	   // First transition ending in matching state
 	      // condition matching true value
@@ -171,6 +174,7 @@ public class TestConditionBool {
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(5);
 		mFalsecb.setAccumulatedTimeThreshold(2);
+		mkb.setHistoryLength(200);
 	
 	   // First transition ending in matching state
 	      // condition matching true value
@@ -247,6 +251,7 @@ public class TestConditionBool {
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(3);
 		mFalsecb.setAccumulatedTimeThreshold(2);
+		mkb.setHistoryLength(200);
 
 		mkb.clearHistory();
 		mkb.appendValue(true);
@@ -270,6 +275,7 @@ public class TestConditionBool {
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(3);
 		mFalsecb.setAccumulatedTimeThreshold(2);
+		mkb.setHistoryLength(200);
 
 		mkb.clearHistory();
 		mkb.appendValue(false);
@@ -313,6 +319,7 @@ public class TestConditionBool {
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(3);
 		mFalsecb.setAccumulatedTimeThreshold(2);
+		mkb.setHistoryLength(200);
 
 		mkb.clearHistory();
 		mkb.appendValue(true);

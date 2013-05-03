@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ConditionInt extends Condition {
+public class ConditionInt extends AtomicCondition {
 	
 	protected int mMin;
 	protected int mMax;

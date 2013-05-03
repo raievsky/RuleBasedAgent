@@ -2,7 +2,7 @@ package siet.lcis;
 
 public abstract class Knowledge {
 	protected String mID;
-	protected int mHistoryLength = 0;
+	protected long mHistoryLength = 0;
 	protected boolean mIsValid = false;
 //	T mValue;
 	
@@ -12,7 +12,10 @@ public abstract class Knowledge {
 //		this.mValue = pValue;
 	}
 	
-	public void setHistoryLength(int pLength)
+	// Note, this function should only be used for testing purpose.
+	// RuleBase and WorldModel classes are responsible for modifying
+	// history lengths.
+	public void setHistoryLength(long pLength)
 	{
 		mHistoryLength = pLength;
 	}

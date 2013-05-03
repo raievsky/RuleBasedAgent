@@ -33,12 +33,23 @@ public class KnowledgeBool extends Knowledge {
 	
 	public void appendValue(boolean pValue)
 	{
-		// TODO cleanup transition list from obsolete transitions
+		final Date now = new Date();
+		// cleanup transition list from obsolete transitions
+		for (Transition<Boolean> tit : mTransitionList)
+		{
+			if (now.getTime() - tit.mDate.getTime() > mHistoryLength * 1000)
+			{
+				mTransitionList.remove();
+			}
+			else
+			{
+				break;
+			}
+		}
 		
 		// No need to add a transition when state does not change
 		if (!(pValue == mValue && mIsValid))
 		{
-			Date now = new Date();
 			mTransitionList.offer(new Transition<Boolean>(pValue, now));
 			mValue = pValue;
 		}

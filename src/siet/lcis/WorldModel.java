@@ -1,10 +1,19 @@
 package siet.lcis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class WorldModel extends ArrayList<Knowledge> {
 
+	protected RuleBase mRuleBase;
+	
+	public void setRuleBase(RuleBase pRuleBase)
+	{
+		mRuleBase = pRuleBase;
+	}
+	
 	public void push(Knowledge knowledge)
 	{
 		boolean existing = false;
@@ -37,6 +46,18 @@ public class WorldModel extends ArrayList<Knowledge> {
 		if (!existing)
 		{
 			this.add(knowledge);
+			updateKnowledgesHistLengths(mRuleBase.getMaxKnowledgeLengths());
+		}
+	}
+
+	public void updateKnowledgesHistLengths(Map<String, Long> pMaxKnowledgeHistLengths)
+	{
+		for (Knowledge kit : this)
+		{
+			if (pMaxKnowledgeHistLengths.containsKey(kit.mID))
+			{
+				kit.setHistoryLength(pMaxKnowledgeHistLengths.get(kit.mID));
+			}
 		}
 	}
 

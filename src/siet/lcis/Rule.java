@@ -1,5 +1,7 @@
 package siet.lcis;
 
+import java.util.Map;
+
 public class Rule {
 
 	Condition mCondition;
@@ -21,5 +23,10 @@ public class Rule {
 			mActive = true;
 		}
 		return matchFound;
+	}
+
+	public Map<String, Long> getKnowledgesHistoryLengths()
+	{
+		return mCondition.getKnowledgesHistoryTimes();
 	}
 }

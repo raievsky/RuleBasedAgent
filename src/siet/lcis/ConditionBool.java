@@ -1,6 +1,6 @@
 package siet.lcis;
 
-public class ConditionBool extends Condition {
+public class ConditionBool extends AtomicCondition {
 
 	protected boolean mValue;
 	
