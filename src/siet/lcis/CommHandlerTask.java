@@ -55,8 +55,6 @@ public class CommHandlerTask extends Thread {
 		    {
 		    	// VAssistant.mPerceptions is thread-safe.
 		    	mVAssistant.mPerceptions.add(new Stimulus(inputLine));
-//		    	mOutputStream.write("ok\n");
-//		    	mOutputStream.flush();
 		    }
 		    
 		    System.out.println("closing communication handler task's socket for service ["+mSenderId+"]");

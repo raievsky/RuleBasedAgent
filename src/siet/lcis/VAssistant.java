@@ -26,11 +26,11 @@ public class VAssistant extends Thread {
 		ConditionInt isCaniculeInt = new ConditionInt("canicule int", "temperature", 30, Integer.MAX_VALUE);
 		isCaniculeInt.setHistoryLength(20);
 		isCaniculeInt.setAccumulatedTimeThreshold(10);
-		mRuleBase.add(new Rule(isCaniculeInt , new Action()));
+		mRuleBase.add(new Rule(isCaniculeInt , new SendMessage(this, "meteo", "CANICULE !!!")));
 		ConditionBool isCanicule = new ConditionBool("Canicule Bool", "temperature", true);
 		isCanicule.setHistoryLength(10);
 		isCanicule.setAccumulatedTimeThreshold(5);
-		mRuleBase.add(new Rule(isCanicule, new Action()));
+		mRuleBase.add(new Rule(isCanicule, new SendMessage(this, "meteo", "canicule bool.")));
 	}
 	
 	public void run()
@@ -155,5 +155,10 @@ public class VAssistant extends Thread {
 	public void unregisterService(String mSenderId)
 	{
 		mServiceMap.remove(mSenderId);
+	}
+	
+	public CommHandlerTask getCommTask(String pServiceID)
+	{
+		return mServiceMap.get(pServiceID);
 	}
 }
