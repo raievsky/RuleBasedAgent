@@ -1,7 +1,6 @@
 package siet.lcis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -29,8 +28,7 @@ public class WorldModel extends ArrayList<Knowledge> {
 					}
 					else if (k instanceof KnowledgeString)
 					{
-						System.err.println("Not yet implemented: WorldModel push of KnowledgeString");
-//						((KnowledgeString) k).mValue = ((KnowledgeString) knowledge).mValue;
+						((KnowledgeString) k).mValue = ((KnowledgeString) knowledge).mValue;
 					}
 					else if (k instanceof KnowledgeBool)
 					{
@@ -49,7 +47,7 @@ public class WorldModel extends ArrayList<Knowledge> {
 			updateKnowledgesHistLengths(mRuleBase.getMaxKnowledgeLengths());
 		}
 	}
-
+	
 	public void updateKnowledgesHistLengths(Map<String, Long> pMaxKnowledgeHistLengths)
 	{
 		for (Knowledge kit : this)

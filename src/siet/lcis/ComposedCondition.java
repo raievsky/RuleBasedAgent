@@ -1,6 +1,5 @@
 package siet.lcis;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ComposedCondition extends Condition {
@@ -12,6 +11,8 @@ public class ComposedCondition extends Condition {
 	{
 		super(pId);
 		mType = pType;
+		mC1 = pC1;
+		mC2 = pC2;
 	}
 
 	@Override
@@ -26,7 +27,7 @@ public class ComposedCondition extends Condition {
 		}
 		else
 		{
-			System.err.println("Internal error, ComposedCondition of wrong type: ["+mType+"]");
+			System.err.println("Internal error, invalid ComposedCondition type: ["+mType+"]");
 		}
 		return false;
 	}
