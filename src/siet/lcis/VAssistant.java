@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.google.gson.Gson;
+
 public class VAssistant extends Thread {
 
 	WorldModel mWorldModel = new WorldModel();
@@ -26,11 +28,33 @@ public class VAssistant extends Thread {
 		ConditionInt isCaniculeInt = new ConditionInt("canicule int", "temperature", 30, Integer.MAX_VALUE);
 		isCaniculeInt.setHistoryLength(20);
 		isCaniculeInt.setAccumulatedTimeThreshold(10);
-		mRuleBase.add(new Rule(isCaniculeInt , new SendMessage(this, "meteo", "CANICULE !!!")));
-		ConditionBool isCanicule = new ConditionBool("Canicule Bool", "temperature", true);
-		isCanicule.setHistoryLength(10);
-		isCanicule.setAccumulatedTimeThreshold(5);
-		mRuleBase.add(new Rule(isCanicule, new SendMessage(this, "meteo", "canicule bool.")));
+		
+		SIETJSONRequest caniculeFrame = new SIETJSONRequest();
+		caniculeFrame.type = "put";
+		caniculeFrame.description = "alerte météo";
+		
+		SIETJSONItem cfItem = new SIETJSONItem();
+		cfItem.subtype = "meteo";
+		cfItem.description = "";
+		cfItem.validity = cfItem.pubdate + 100000;
+		
+		SIETJSONItemContent itemContent = new SIETJSONItemContent();
+		itemContent.level = "high";
+		itemContent.title = "heat wave";
+		cfItem.content.add(itemContent);
+		
+		caniculeFrame.items.add(cfItem);
+		
+		Gson gson = new Gson();
+		String message = gson.toJson(caniculeFrame);
+		
+		mRuleBase.add(new Rule(isCaniculeInt , new SendMessage(this, "gui", message)));
+		
+		
+//		ConditionBool isCanicule = new ConditionBool("Canicule Bool", "temperature", true);
+//		isCanicule.setHistoryLength(10);
+//		isCanicule.setAccumulatedTimeThreshold(5);
+//		mRuleBase.add(new Rule(isCanicule, new SendMessage(this, "meteo", "canicule bool.")));
 	}
 	
 	public void run()
