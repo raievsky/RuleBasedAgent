@@ -16,6 +16,10 @@ public class SendMessage extends Action {
 	public void execute()
 	{
 		System.out.println("Send Message execute");
-		mVAssistant.getCommTask(mReceiverServiceID).writeToStream(mMessage);
+		CommHandlerTask commTask = mVAssistant.getCommTask(mReceiverServiceID);
+		if (commTask != null)
+		{
+			commTask.writeToStream(mMessage);
+		}
 	}
 }
