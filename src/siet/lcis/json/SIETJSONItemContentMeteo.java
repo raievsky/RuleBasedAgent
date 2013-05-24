@@ -1,4 +1,4 @@
-package siet.lcis;
+package siet.lcis.json;
 
 public class SIETJSONItemContentMeteo extends SIETJSONItemContent {
 

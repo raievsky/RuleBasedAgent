@@ -1,4 +1,4 @@
-package siet.lcis;
+package siet.lcis.json;
 
 /*
 import com.google.gson.JsonDeserializationContext;
@@ -9,12 +9,12 @@ import com.google.gson.JsonParseException;
 
 public class SIETJSONItemContent {
 	
-	String level = null;
-	String title = null;
+	public String level = null;
+	public String title = null;
 	
-	String town = null;
-	String weather = null;
-	Integer temperature = null;
+	public String town = null;
+	public String weather = null;
+	public Integer temperature = null;
 	
 /* essais parsing spécifique pour chaque type de content différent, un chiard pour ce que ça sert.
 //	String contentString;

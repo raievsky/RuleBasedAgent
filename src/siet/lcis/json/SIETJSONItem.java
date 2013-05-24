@@ -1,4 +1,4 @@
-package siet.lcis;
+package siet.lcis.json;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,12 +14,12 @@ import com.google.gson.JsonParser;
 */
 
 public class SIETJSONItem {
-	String subtype = "";
-	String description = "";
-	long pubdate = 0;
-	long validity = 0;
+	public String subtype = "";
+	public String description = "";
+	public long pubdate = 0;
+	public long validity = 0;
 	
-	List<SIETJSONItemContent> content = new ArrayList<SIETJSONItemContent>();
+	public List<SIETJSONItemContent> content = new ArrayList<SIETJSONItemContent>();
 
 	public SIETJSONItem()
 	{
