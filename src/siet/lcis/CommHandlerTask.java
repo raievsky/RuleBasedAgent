@@ -16,7 +16,7 @@ public class CommHandlerTask extends Thread {
 		
 		private PrintWriter mOutputStream = null;
 		
-		private static final String TAG = "siet.lcis. CommHandlerTask";
+		private static final String TAG = "siet.lcis.CommHandlerTask";
 
 	    public CommHandlerTask(Socket socket)
 	    {
@@ -31,6 +31,9 @@ public class CommHandlerTask extends Thread {
 
 	    public void run() {
 
+	    // We have just been created, initiate an "identification protocol"
+	    // with the process asking for communication.
+		    
 		try {
 		    mOutputStream = new PrintWriter(mSocket.getOutputStream(), true);
 		    BufferedReader in = new BufferedReader(
@@ -38,12 +41,15 @@ public class CommHandlerTask extends Thread {
 					    mSocket.getInputStream()));
 		    
 		    try {
-				sleep(1000);
+				sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		    
+		    // Ask for id.
 		    mOutputStream.println("id?");
 
+		    // Read id.
 		    String inputLine = in.readLine();
 		    if (inputLine != null)
 		    {
