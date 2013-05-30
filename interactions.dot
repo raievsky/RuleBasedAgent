@@ -1,0 +1,10 @@
+digraph G {
+   // graph [layout=dot rankdir=LR]
+
+   Assistant -> "World Model" [label="updates, monitors"]
+
+   Assistant -> Widget [label="heat wave alert"]
+   Assistant -> Widget [label="current temperature"]
+   Widget -> "Hydrate Activity" [label="displays"]
+   "Weather\nService" -> Assistant [label="temperature"]
+}
