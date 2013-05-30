@@ -1,9 +1,14 @@
 package siet.lcis;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import siet.lcis.json.SIETJSONItem;
+import siet.lcis.json.SIETJSONItemContent;
+import siet.lcis.json.SIETJSONRequest;
 
 import com.google.gson.Gson;
 
@@ -16,47 +21,87 @@ public class VAssistant extends Thread {
 	
 	public ConcurrentLinkedQueue<Stimulus> mPerceptions = new ConcurrentLinkedQueue<Stimulus>();
 	
+	protected Gson mGson = new Gson();
+	
 	public VAssistant()
+	{
+		initialize();
+
+	}
+	
+	private void initialize()
 	{
 		mWorldModel.setRuleBase(mRuleBase);
 		mRuleBase.setWorldModel(mWorldModel);
-		
+
 		KnowledgeInt lKTemp = new KnowledgeInt("temperature");
 		lKTemp.setHistoryLength(30);
 		mWorldModel.push(lKTemp);
-		
+
+		// Create canicule condition
 		ConditionInt isCaniculeInt = new ConditionInt("canicule int", "temperature", 30, Integer.MAX_VALUE);
 		isCaniculeInt.setHistoryLength(20);
 		isCaniculeInt.setAccumulatedTimeThreshold(10);
-		
+
+		// Create canicule alert message
 		SIETJSONRequest caniculeFrame = new SIETJSONRequest();
 		caniculeFrame.type = "put";
 		caniculeFrame.description = "alerte météo";
-		
+
 		SIETJSONItem cfItem = new SIETJSONItem();
-		cfItem.subtype = "meteo";
+		cfItem.subtype = "meteoalert";
 		cfItem.description = "";
 		cfItem.validity = cfItem.pubdate + 100000;
-		
+
 		SIETJSONItemContent itemContent = new SIETJSONItemContent();
 		itemContent.level = "high";
 		itemContent.title = "heat wave";
 		cfItem.content.add(itemContent);
-		
+
 		caniculeFrame.items.add(cfItem);
+
+		String message = mGson.toJson(caniculeFrame);
+
+		// Create and add rule
+		// receiver id must match Virtual Assistant's one (e.g. siet.lcis.dummyvassistantwidget.MainActivity mId).
+		mRuleBase.add(new Rule(isCaniculeInt , new SendMessage(this, "siet.lcis.VAssistantWidget", message)));
+
+		// Create hydrate activity condition
+		ConditionBool hydrateTooLong = new ConditionBool("hydrate too long", "hydrate shown", true);
+		hydrateTooLong.setHistoryLength(20);
+		hydrateTooLong.setAccumulatedTimeThreshold(20);
+
+		SIETJSONRequest endHeatWaveFrame = new SIETJSONRequest();
+		endHeatWaveFrame.type = "put";
+		endHeatWaveFrame.description = "alerte météo";
+
+		SIETJSONItem ehwItem = new SIETJSONItem();
+		ehwItem.subtype = "meteoalert";
+		ehwItem.description = "";
+		ehwItem.validity = ehwItem.pubdate + 100000;
+
+		itemContent = new SIETJSONItemContent();
+		itemContent.level = "high";
+		itemContent.title = "heat wave end";
+		ehwItem.content.add(itemContent);
+
+		endHeatWaveFrame.items.add(ehwItem);
+
+		message = mGson.toJson(endHeatWaveFrame);
+
+		// Create and add rule
+		// receiver id must match Virtual Assistant's one (e.g. siet.lcis.dummyvassistantwidget.MainActivity mId).
+		mRuleBase.add(new Rule(hydrateTooLong , new SendMessage(this, "siet.lcis.VAssistantWidget", message)));
 		
-		Gson gson = new Gson();
-		String message = gson.toJson(caniculeFrame);
-		
-		mRuleBase.add(new Rule(isCaniculeInt , new SendMessage(this, "gui", message)));
 		
 		
-//		ConditionBool isCanicule = new ConditionBool("Canicule Bool", "temperature", true);
-//		isCanicule.setHistoryLength(10);
-//		isCanicule.setAccumulatedTimeThreshold(5);
-//		mRuleBase.add(new Rule(isCanicule, new SendMessage(this, "meteo", "canicule bool.")));
+		
+		//		ConditionBool isCanicule = new ConditionBool("Canicule Bool", "temperature", true);
+		//		isCanicule.setHistoryLength(10);
+		//		isCanicule.setAccumulatedTimeThreshold(5);
+		//		mRuleBase.add(new Rule(isCanicule, new SendMessage(this, "meteo", "canicule bool.")));	
 	}
-	
+
 	public void run()
 	{
 		// Initialize communication thread
@@ -135,10 +180,27 @@ public class VAssistant extends Thread {
 			// TODO parse stimuli to push appropriate knowledge to 
 			// world model.
 			
-			int temp = Integer.parseInt(stim.rawText());
-//			boolean b = temp > 30;
-//			mWorldModel.push(new KnowledgeBool("temperature", b));
-			mWorldModel.push(new KnowledgeInt("temperature", temp));
+			SIETJSONRequest deserializedRequest = mGson.fromJson(stim.rawText(), SIETJSONRequest.class);
+
+			SIETJSONItem rItem = deserializedRequest.items.get(0);
+			SIETJSONItemContent rItemContent = rItem.content.get(0);
+
+			if (rItem.subtype.equalsIgnoreCase("meteo"))
+			{
+				System.out.println("request's town:"+ rItemContent.town);
+//				int temp = Integer.parseInt(stim.rawText());
+				int temp = rItemContent.temperature;
+				mWorldModel.push(new KnowledgeInt("temperature", temp));
+			}
+			else if (rItem.subtype.equalsIgnoreCase("knowledge"))
+			{
+				System.out.println("request title:"+ rItemContent.title);
+				if (rItemContent.type.equalsIgnoreCase("bool"))
+				{
+					mWorldModel.push(new KnowledgeBool(rItemContent.title, rItemContent.boolValue));
+				}
+			}
+
 			stim = mPerceptions.poll();
 		} 
 		
@@ -147,7 +209,7 @@ public class VAssistant extends Thread {
 		{
 			for (String serviceName : mServiceMap.keySet())
 			{
-				if (serviceName.equals("siet.lcis.DisplayMessagesActivity"))
+				if (serviceName.equals("siet.lcis.DebugWorldModel"))
 				{
 					CommHandlerTask task = mServiceMap.get(serviceName);
 					if (task != null)
@@ -158,6 +220,51 @@ public class VAssistant extends Thread {
 					{
 						System.err.println("ERROR (Internal): No Communication handler task available.");
 					}
+				}
+				else if (serviceName.equals("siet.lcis.VAssistantWidget"))
+				{
+					// TODO put this as the action of an always satisfied condition.
+					
+					// Send current temperature to assistant widget.
+					for (Knowledge kit : mWorldModel)
+					{
+						if (kit.mID.equals("temperature") && kit.isValid())
+						{
+							// Create temperature message
+							SIETJSONRequest meteoFrame = new SIETJSONRequest();
+							meteoFrame.type = "put";
+							meteoFrame.description = "météo";
+
+							SIETJSONItem cfItem = new SIETJSONItem();
+							cfItem.subtype = "meteo";
+							cfItem.description = "";
+							Date now = new Date();
+							cfItem.pubdate = now.getTime();
+							cfItem.validity = cfItem.pubdate + 100000;
+
+							SIETJSONItemContent itemContent = new SIETJSONItemContent();
+							itemContent.temperature = ((KnowledgeInt)kit).mValue;
+							
+							cfItem.content.add(itemContent);
+
+							meteoFrame.items.add(cfItem);
+
+							String message = mGson.toJson(meteoFrame);
+							
+							System.out.println(message);
+							
+							CommHandlerTask task = mServiceMap.get(serviceName);
+							if (task != null)
+							{
+								task.writeToStream(message);
+							}
+							else
+							{
+								System.err.println("ERROR (Internal): No Communication handler task available.");
+							}
+						}
+					}
+					
 				}
 			}
 		}
@@ -183,6 +290,11 @@ public class VAssistant extends Thread {
 	
 	public CommHandlerTask getCommTask(String pServiceID)
 	{
-		return mServiceMap.get(pServiceID);
+		CommHandlerTask result = mServiceMap.get(pServiceID);
+		if (result == null)
+		{
+			System.out.println("Warning, receiver id not registered: ["+pServiceID+"]");
+		}
+		return result;
 	}
 }
