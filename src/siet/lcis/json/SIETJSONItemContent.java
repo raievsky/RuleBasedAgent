@@ -15,6 +15,8 @@ public class SIETJSONItemContent {
 	public String town = null;
 	public String weather = null;
 	public Integer temperature = null;
+	public String type = null;
+	public Boolean boolValue = null;
 	
 /* essais parsing spécifique pour chaque type de content différent, un chiard pour ce que ça sert.
 //	String contentString;
