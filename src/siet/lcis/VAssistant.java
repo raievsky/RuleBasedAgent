@@ -66,34 +66,41 @@ public class VAssistant extends Thread {
 		// receiver id must match Virtual Assistant's one (e.g. siet.lcis.dummyvassistantwidget.MainActivity mId).
 		mRuleBase.add(new Rule(isCaniculeInt , new SendMessage(this, "siet.lcis.VAssistantWidget", message)));
 
-		// Create hydrate activity condition
-		ConditionBool hydrateTooLong = new ConditionBool("hydrate too long", "hydrate shown", true);
-		hydrateTooLong.setHistoryLength(20);
-		hydrateTooLong.setAccumulatedTimeThreshold(20);
+		////////////////////////////////////
+		// Create a condition that monitors user interaction with hydrate activity 
+		
+		ConditionBool userInactive = new ConditionBool("user inactive", "user interaction", false);
+		userInactive.setHistoryLength(10);
+		userInactive.setAccumulatedTimeThreshold(10);
+		
+		ConditionBool hydrateActiveCondition = new ConditionBool("hydratation activity active", "hydrate shown", true);
+		hydrateActiveCondition.setHistoryLength(0);
+		hydrateActiveCondition.setAccumulatedTimeThreshold(0);
+		
+		// Create SendMessage action to execute when the condition is not satisfied
+		SIETJSONRequest inactivityFrame = new SIETJSONRequest();
+		inactivityFrame.type = "put";
+		inactivityFrame.description = "levée de doute";
 
-		SIETJSONRequest endHeatWaveFrame = new SIETJSONRequest();
-		endHeatWaveFrame.type = "put";
-		endHeatWaveFrame.description = "alerte météo";
+		SIETJSONItem inactivityItem = new SIETJSONItem();
+		inactivityItem.subtype = "alert";
+		inactivityItem.description = "user inactive";
+		inactivityItem.validity = inactivityItem.pubdate + 100000;
 
-		SIETJSONItem ehwItem = new SIETJSONItem();
-		ehwItem.subtype = "meteoalert";
-		ehwItem.description = "";
-		ehwItem.validity = ehwItem.pubdate + 100000;
+		SIETJSONItemContent iiContent = new SIETJSONItemContent();
+		iiContent.level = "high";
+		iiContent.title = "inactivity";
+		inactivityItem.content.add(iiContent);
 
-		itemContent = new SIETJSONItemContent();
-		itemContent.level = "high";
-		itemContent.title = "heat wave end";
-		ehwItem.content.add(itemContent);
+		inactivityFrame.items.add(inactivityItem);
 
-		endHeatWaveFrame.items.add(ehwItem);
-
-		message = mGson.toJson(endHeatWaveFrame);
-
-		// Create and add rule
-		// receiver id must match Virtual Assistant's one (e.g. siet.lcis.dummyvassistantwidget.MainActivity mId).
-		mRuleBase.add(new Rule(hydrateTooLong , new SendMessage(this, "siet.lcis.VAssistantWidget", message)));
+		message = mGson.toJson(inactivityFrame);
 		
 		
+		// Compose two conditions to monitor both the hydrate activity status and user interaction status
+		ComposedCondition userInteractsWithHydrate = new ComposedCondition("User interacts with hydrate activity", "and", hydrateActiveCondition, userInactive);
+	
+		mRuleBase.add(new Rule(userInteractsWithHydrate , new SendMessage(this, "siet.lcis.VAssistantWidget", message)));
 		
 		
 		//		ConditionBool isCanicule = new ConditionBool("Canicule Bool", "temperature", true);
@@ -194,10 +201,11 @@ public class VAssistant extends Thread {
 			}
 			else if (rItem.subtype.equalsIgnoreCase("knowledge"))
 			{
-				System.out.println("request title:"+ rItemContent.title);
+				System.out.println("VAssistant updateWorldModel, received knowledge message. Knowledge id:"+ rItemContent.title);
 				if (rItemContent.type.equalsIgnoreCase("bool"))
 				{
 					mWorldModel.push(new KnowledgeBool(rItemContent.title, rItemContent.boolValue));
+					System.out.println("Knowledge value:"+ rItemContent.boolValue.toString());
 				}
 			}
 
@@ -251,7 +259,7 @@ public class VAssistant extends Thread {
 
 							String message = mGson.toJson(meteoFrame);
 							
-							System.out.println(message);
+							// System.out.println(message);
 							
 							CommHandlerTask task = mServiceMap.get(serviceName);
 							if (task != null)
