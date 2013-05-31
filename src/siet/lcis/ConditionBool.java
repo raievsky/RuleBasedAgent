@@ -21,7 +21,7 @@ public class ConditionBool extends AtomicCondition {
 			k = pWM.get(ki);
 			if (k instanceof KnowledgeBool)
 			{
-				if (((KnowledgeBool) k).mID == mKnowledgeID )
+				if (((KnowledgeBool) k).mID.equals(mKnowledgeID) )
 				{
 					matchFound = match((KnowledgeBool) k);
 				}

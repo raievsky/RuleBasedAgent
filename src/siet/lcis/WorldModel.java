@@ -18,7 +18,7 @@ public class WorldModel extends ArrayList<Knowledge> {
 		boolean existing = false;
 		for (Iterator<Knowledge> kIt = this.iterator(); kIt.hasNext();) {
 			Knowledge k = kIt.next();
-			if (k.mID == knowledge.mID)
+			if (k.mID.equals(knowledge.mID))
 			{
 				if (k.getClass() == knowledge.getClass())
 				{
