@@ -37,13 +37,36 @@ public class TestConditionBool {
 		assertTrue("Boolean knowledge value should be true", mFalsecb.match(mkb));
 	}
 
-	// Testing condition matching with only one transition
+	// Testing condition matching with only one transition and 
+	// history length equals accumulated time threshold
+	@Test
+	public void singleTransitionHisoryTest() throws InterruptedException {
+		mTruecb.setHistoryLength(2);
+		mTruecb.setAccumulatedTimeThreshold(2);
+		mFalsecb.setHistoryLength(2);
+		mFalsecb.setAccumulatedTimeThreshold(2);
+		mkb.clearHistory();
+		mkb.setHistoryLength(200);
+		
+		// Transition ending in matching state
+		// condition matching true value
+		mkb.appendValue(true);
+		Thread.sleep(100);
+		assertTrue(!mTruecb.match(mkb));
+		
+		Thread.sleep(1900);
+		assertTrue("Only one transition to matching state", mTruecb.match(mkb));
+		Thread.sleep(100);
+		assertTrue(mTruecb.match(mkb));
+	}
+	
 	@Test
 	public void singleTransitionWithinHisoryTest() throws InterruptedException {
 		mTruecb.setHistoryLength(5);
 		mTruecb.setAccumulatedTimeThreshold(2);
 		mFalsecb.setHistoryLength(5);
 		mFalsecb.setAccumulatedTimeThreshold(2);
+		mkb.clearHistory();
 		mkb.setHistoryLength(200);
 		
 		// Transition ending in matching state
